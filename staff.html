@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123B4A">
+  <title>Restaurant Dashboard | ISLA-PLATEU</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/assets/auth.css">
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body data-page="staff">
+  <header class="dash-top">
+    <a class="brand" href="/"><img src="/assets/logo.svg" alt="" width="42" height="42"><span><strong>ISLA-PLATEU</strong><small>RESTAURANT DASHBOARD</small></span></a>
+    <div class="user-chip">
+      <a class="btn btn-quiet" href="/map" title="Restaurant map"><i data-lucide="map-pinned" class="icon"></i><span class="label-hide-sm">Map</span></a>
+      <div id="bellMount" class="bell-wrap"></div>
+      <div class="user-meta"><strong id="userName">…</strong><span id="userRole"></span></div>
+      <button class="btn btn-quiet" type="button" data-change-password title="Change password"><i data-lucide="settings" class="icon"></i><span class="label-hide-sm">Password</span></button>
+      <button class="btn btn-quiet" type="button" data-logout title="Log out"><i data-lucide="log-out" class="icon"></i><span>Log Out</span></button>
+    </div>
+  </header>
+  <main class="dash-main">
+    <h1 id="restName">Restaurant dashboard</h1>
+    <p class="lead" id="restLead">Manage reservations, advance orders and customer messages for your restaurant.</p>
+    <div id="noRest" class="alert alert-info hidden"><i data-lucide="circle-alert" class="icon"></i><span>No restaurant is assigned to your account yet. Ask the administrator to assign one.</span></div>
+    <div id="staffApp" class="hidden">
+      <div class="stat-grid" id="staffStats"></div>
+      <div id="tabsRoot">
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" data-tab="reservations">Reservations <span class="count" id="cRes" hidden></span></button>
+          <button class="tab" role="tab" data-tab="orders">Advance orders <span class="count" id="cOrd" hidden></span></button>
+          <button class="tab" role="tab" data-tab="messages">Messages <span class="count" id="cMsg" hidden></span></button>
+          <button class="tab" role="tab" data-tab="reviews">Ratings &amp; reviews</button>
+          <button class="tab" role="tab" data-tab="restaurant">Restaurant &amp; menu</button>
+        </div>
+        <section class="tab-panel" data-panel="reservations">
+          <div class="toolbar"><label class="muted">Show <select id="resFilter"><option value="open">Open (pending / confirmed)</option><option value="PENDING">Pending only</option><option value="all">All</option></select></label></div>
+          <div id="resList" class="stack"></div>
+        </section>
+        <section class="tab-panel" data-panel="orders">
+          <div class="toolbar"><label class="muted">Show <select id="ordFilter"><option value="open">Open orders</option><option value="all">All</option></select></label></div>
+          <div id="ordList" class="stack"></div>
+        </section>
+        <section class="tab-panel" data-panel="messages"><div id="msgRoot"></div></section>
+        <section class="tab-panel" data-panel="reviews"><div id="revRoot"></div></section>
+        <section class="tab-panel" data-panel="restaurant"><div id="restRoot"></div></section>
+      </div>
+    </div>
+  </main>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+  <script src="/assets/common.js" defer></script>
+  <script src="/assets/app.js" defer></script>
+  <script src="/assets/staff.js" defer></script>
+</body>
+</html>

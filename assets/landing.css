@@ -1,0 +1,67 @@
+/* Introduction page */
+body.landing { background: var(--sand); }
+.land-hero {
+  position: relative; isolation: isolate; color: #fff; min-height: min(100vh, 860px); min-height: min(100dvh, 860px);
+  display: flex; flex-direction: column; padding: 0 clamp(18px, 5vw, 72px) 40px;
+  background-color: #123B4A;
+  background-image: linear-gradient(105deg, rgba(5, 30, 39, .72), rgba(5, 30, 39, .32) 58%, rgba(5, 30, 39, .18)),
+    url("https://upload.wikimedia.org/wikipedia/commons/a/a6/Paliton_Beach%2C_Siquijor%2C_Philippines.JPG"),
+    url("/assets/hero.svg");
+  background-position: center, center, center bottom; background-size: cover; background-repeat: no-repeat;
+}
+.land-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 0; }
+.land-bar .brand { color: #fff; }
+.land-bar .brand small { color: #DDF3EC; }
+.land-nav { display: flex; gap: 10px; }
+.land-nav > span { display: flex; gap: 10px; }
+.btn-glass { background: rgba(255, 255, 255, .16); color: #fff; border: 1px solid rgba(255, 255, 255, .5); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.btn-glass:hover { background: rgba(255, 255, 255, .28); }
+.btn-light { background: #fff; color: var(--ocean); }
+.btn-light:hover { background: var(--seafoam); }
+.btn-coral { background: var(--coral); color: #2B1208; box-shadow: 0 10px 28px rgba(233, 139, 104, .4); }
+.btn-coral:hover { background: #F09C7C; transform: translateY(-1px); }
+.btn-xl { min-height: 56px; padding: 0 28px; font-size: 17px; border-radius: 14px; }
+.land-copy { margin: auto 0; padding: 36px 0 24px; max-width: 760px; animation: rise .5s ease-out both; }
+.eyebrow-light { font-size: 12px; letter-spacing: .22em; font-weight: 600; color: #F7C9B4; margin: 0 0 14px; }
+.land-copy h1 { color: #fff; font-size: clamp(38px, 6vw, 72px); line-height: 1.04; text-shadow: 0 2px 18px rgba(0, 0, 0, .25); }
+.land-copy h1 em { font-style: italic; color: #F7C9B4; }
+.land-lead { font-size: clamp(16px, 1.6vw, 19px); color: #EAF6F3; max-width: 56ch; margin: 18px 0 28px; text-shadow: 0 1px 8px rgba(0, 0, 0, .25); }
+.land-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+.land-cta.center { justify-content: center; margin-top: 34px; }
+.land-note { display: flex; align-items: flex-start; gap: 8px; margin: 16px 0 0; font-size: 14px; color: #fff; max-width: 60ch; }
+.land-note .icon { margin-top: 2px; color: #9FE6C9; }
+.land-facts { list-style: none; padding: 0; margin: 34px 0 0; display: flex; gap: clamp(18px, 4vw, 44px); flex-wrap: wrap; }
+.land-facts li { display: grid; }
+.land-facts strong { font-family: var(--font-display); font-size: 28px; line-height: 1.1; color: #fff; }
+.land-facts span { font-size: 13px; color: #CFE6E2; }
+.photo-credit { position: absolute; right: 16px; bottom: 10px; color: rgba(255, 255, 255, .88); font-size: 10px; text-decoration: none; text-shadow: 0 1px 4px rgba(0, 0, 0, .75); }
+.photo-credit:hover { color: #fff; text-decoration: underline; }
+
+.land-section { max-width: 1120px; margin: 0 auto; padding: clamp(40px, 7vw, 84px) clamp(18px, 5vw, 48px) 0; text-align: center; }
+.land-section h2 { font-size: clamp(28px, 3.6vw, 42px); }
+.section-lead { color: var(--muted); margin: 10px auto 34px; max-width: 60ch; }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; text-align: left; }
+.feature { background: #fff; border: 1px solid #EADFCB; border-radius: 20px; padding: 26px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 30px rgba(18, 59, 74, .06); }
+.feature h3 { font-size: 22px; }
+.feature p { margin: 0; color: var(--muted); font-size: 15px; flex: 1; }
+.feature-icon { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 14px; background: var(--seafoam); color: var(--teal-dark); }
+.feature-icon .icon { width: 24px; height: 24px; }
+.chip { align-self: flex-start; font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 999px; background: #FFF1D6; color: #7A4F0E; }
+.chip-open { background: var(--ok-bg); color: #0F5132; }
+.steps { padding-bottom: clamp(40px, 7vw, 80px); }
+.step-list { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; text-align: left; }
+.step-list li { display: flex; gap: 14px; align-items: flex-start; }
+.step-no { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; border-radius: 50%; background: var(--ocean); color: #fff; font-family: var(--font-display); font-size: 18px; }
+.step-list h3 { font-size: 19px; margin-bottom: 4px; }
+.step-list p { margin: 0; color: var(--muted); font-size: 15px; }
+.land-foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 22px clamp(18px, 5vw, 72px); background: var(--ocean); color: #CFE6E2; font-size: 13px; }
+
+@media (max-width: 640px) {
+  .land-bar { flex-wrap: wrap; }
+  .land-nav, .land-nav > span { width: 100%; }
+  .land-nav .btn { flex: 1; min-height: 42px; padding: 0 12px; font-size: 14px; }
+  .btn-xl { width: 100%; font-size: 16px; padding: 0 18px; }
+  .land-cta.center .btn-xl { width: 100%; }
+  .photo-credit { position: static; padding: 18px 0 0; margin-top: auto; }
+  .land-foot { flex-direction: column; }
+}

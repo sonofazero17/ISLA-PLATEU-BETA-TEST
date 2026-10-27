@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123B4A">
+  <meta name="description" content="ISLA-PLATEU helps you discover and compare selected restaurants across Siquijor Island, Philippines.">
+  <title>ISLA-PLATEU | Discover restaurants in Siquijor</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/assets/auth.css">
+  <link rel="stylesheet" href="/assets/landing.css">
+</head>
+<body class="landing">
+  <header class="land-hero" id="top">
+    <div class="land-bar">
+      <a class="brand" href="/"><img src="/assets/logo.svg" alt="" width="42" height="42"><span><strong>ISLA-PLATEU</strong><small>SIQUIJOR RESTAURANT LOCATOR</small></span></a>
+      <nav class="land-nav" aria-label="Account">
+        <span id="guestNav">
+          <a class="btn btn-glass" href="/login"><i data-lucide="log-in" class="icon"></i><span>Log In</span></a>
+          <a class="btn btn-light" href="/register"><i data-lucide="user-plus" class="icon"></i><span>Create Account</span></a>
+        </span>
+        <span id="userNav" class="hidden">
+          <a class="btn btn-light" id="homeLink" href="/map"><i data-lucide="house" class="icon"></i><span>My Page</span></a>
+          <button class="btn btn-glass" type="button" data-logout><i data-lucide="log-out" class="icon"></i><span>Log Out</span></button>
+        </span>
+      </nav>
+    </div>
+
+    <div class="land-copy">
+      <p class="eyebrow-light">SIQUIJOR ISLAND, PHILIPPINES</p>
+      <h1>Find where to eat on the <em>Island of Fire</em>.</h1>
+      <p class="land-lead">ISLA-PLATEU is a restaurant locator for selected restaurants and cafes across Siquijor. Discover places on the map, compare their details, and plan your visit.</p>
+      <div class="land-cta">
+        <a class="btn btn-coral btn-xl" id="enterBtn" href="/map"><i data-lucide="map-pinned" class="icon"></i><span>Enter and Explore the Map</span><i data-lucide="arrow-right" class="icon"></i></a>
+      </div>
+      <p class="land-note"><i data-lucide="circle-check" class="icon"></i> No account needed to browse restaurants. Log in only for live navigation, reservations and orders.</p>
+      <ul class="land-facts" aria-label="At a glance">
+        <li><strong id="restCount">5</strong><span>participating restaurants</span></li>
+        <li><strong>Free</strong><span>to browse the map</span></li>
+        <li><strong>In-app</strong><span>live navigation</span></li>
+      </ul>
+    </div>
+    <a class="photo-credit" href="https://commons.wikimedia.org/wiki/File:Paliton_Beach,_Siquijor,_Philippines.JPG" target="_blank" rel="noopener noreferrer">Paliton Beach photo: Checawey / Wikimedia Commons · CC BY-SA 3.0</a>
+  </header>
+
+  <main>
+    <section class="land-section" aria-labelledby="whatTitle">
+      <h2 id="whatTitle">Everything you need to plan a meal</h2>
+      <p class="section-lead">Browse freely as a visitor, or create a customer account to unlock more.</p>
+      <div class="feature-grid">
+        <article class="feature">
+          <span class="feature-icon"><i data-lucide="map-pinned" class="icon"></i></span>
+          <h3>Explore the map</h3>
+          <p>See selected restaurants on an interactive map of Siquijor. Search, filter and open details such as address, hours and contact information.</p>
+          <span class="chip chip-open">Open to everyone</span>
+        </article>
+        <article class="feature">
+          <span class="feature-icon"><i data-lucide="navigation" class="icon"></i></span>
+          <h3>Navigate inside the app</h3>
+          <p>Share your location and follow your position on the map, with a route, distance and estimated travel time to the restaurant you choose.</p>
+          <span class="chip">Free account required</span>
+        </article>
+        <article class="feature">
+          <span class="feature-icon"><i data-lucide="utensils" class="icon"></i></span>
+          <h3>Reserve and order ahead</h3>
+          <p>Request a table, order ahead where a restaurant offers it, message the restaurant, and leave a rating after your visit.</p>
+          <span class="chip">Customer account</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="land-section steps" aria-labelledby="howTitle">
+      <h2 id="howTitle">How it works</h2>
+      <ol class="step-list">
+        <li><span class="step-no">1</span><div><h3>Explore</h3><p>Open the map and browse restaurants. No sign-up needed.</p></div></li>
+        <li><span class="step-no">2</span><div><h3>Log in when you need to</h3><p>Create a free customer account to navigate, reserve, order or message.</p></div></li>
+        <li><span class="step-no">3</span><div><h3>Enjoy Siquijor</h3><p>Follow the route, show up, and share your experience.</p></div></li>
+      </ol>
+      <div class="land-cta center">
+        <a class="btn btn-primary btn-xl" href="/map"><i data-lucide="map-pinned" class="icon"></i><span>Enter and Explore the Map</span></a>
+        <a class="btn btn-quiet btn-xl" href="/login"><i data-lucide="log-in" class="icon"></i><span>Log In</span></a>
+        <a class="btn btn-quiet btn-xl" href="/register"><i data-lucide="user-plus" class="icon"></i><span>Create Account</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="land-foot">
+    <span>ISLA-PLATEU · Siquijor State College capstone project</span>
+    <span>Map data © OpenStreetMap contributors</span>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+  <script src="/assets/common.js" defer></script>
+  <script src="/assets/landing.js" defer></script>
+</body>
+</html>

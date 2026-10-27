@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123B4A">
+  <title>Create Account | ISLA-PLATEU</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/assets/auth.css">
+</head>
+<body class="auth-page" data-page="register">
+  <main class="auth-shell">
+    <section class="auth-hero" aria-label="Welcome to ISLA-PLATEU">
+      <a class="brand" href="/"><img src="/assets/logo.svg" alt="" width="42" height="42"><span><strong>ISLA-PLATEU</strong><small>SIQUIJOR RESTAURANT LOCATOR</small></span></a>
+      <div class="hero-copy">
+        <h2>Taste the <em>island</em>, one table at a time.</h2>
+        <p>Discover local restaurants and cafes across Siquijor, find them on the map, and plan where to eat.</p>
+        <ul class="hero-points">
+          <li><i data-lucide="map-pinned" class="icon"></i> Interactive map of Siquijor</li>
+          <li><i data-lucide="utensils" class="icon"></i> Selected local restaurants and cafes</li>
+          <li><i data-lucide="clock" class="icon"></i> Hours, contacts and directions</li>
+        </ul>
+      </div>
+    </section>
+    <section class="auth-panel">
+      <div class="auth-stack">
+        <div class="auth-card">
+          <h1>Create your account</h1>
+          <p class="lead">Sign up as a customer to navigate, reserve and order from Siquijor's restaurants.</p>
+          <form class="login-form" id="form-register" data-form="register" novalidate>
+            <div class="form-banner alert hidden" role="alert"></div>
+            <div class="field">
+              <label for="register-fullName">Full name</label>
+              <div class="input-wrap"><i data-lucide="user-round" class="icon"></i><input id="register-fullName" name="fullName" type="text" autocomplete="name" maxlength="80" placeholder="Juan Dela Cruz" aria-describedby="err-register-fullName"></div>
+              <p class="field-error" id="err-register-fullName" data-error-for="fullName" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="register-email">Email address</label>
+              <div class="input-wrap"><i data-lucide="mail" class="icon"></i><input id="register-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" aria-describedby="err-register-email"></div>
+              <p class="field-error" id="err-register-email" data-error-for="email" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="register-password">Password</label>
+              <div class="input-wrap has-toggle"><i data-lucide="lock" class="icon"></i><input id="register-password" name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" aria-describedby="err-register-password"><button type="button" class="toggle-pw" data-target="register-password" aria-label="Show password" aria-pressed="false" title="Show password"><i data-lucide="eye" class="icon"></i></button></div>
+              <p class="hint">Use 8+ characters with at least one letter and one number.</p><p class="field-error" id="err-register-password" data-error-for="password" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="register-confirmPassword">Confirm password</label>
+              <div class="input-wrap has-toggle"><i data-lucide="lock" class="icon"></i><input id="register-confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Re-enter your password" aria-describedby="err-register-confirmPassword"><button type="button" class="toggle-pw" data-target="register-confirmPassword" aria-label="Show password" aria-pressed="false" title="Show password"><i data-lucide="eye" class="icon"></i></button></div>
+              <p class="field-error" id="err-register-confirmPassword" data-error-for="confirmPassword" role="alert"></p>
+            </div>
+            <button class="btn btn-primary btn-block" id="submit-register" type="submit" data-label="Create Account" data-loading="Creating account…">
+              <i data-lucide="user-plus" class="icon btn-icon"></i><i data-lucide="loader-circle" class="icon spinner"></i><span class="submit-label">Create Account</span>
+            </button>
+          </form>
+          <p class="switch-line">Already have an account? <a href="/login"><i data-lucide="arrow-left" class="icon"></i>Back to Login</a></p>
+          <p class="hint center" style="margin-top:12px">Own or manage a restaurant? <a href="/register-staff">Apply for a staff account</a> instead.</p>
+        </div>
+        <a class="photo-credit" href="https://commons.wikimedia.org/wiki/File:Paliton_Beach,_Siquijor,_Philippines.JPG" target="_blank" rel="noopener noreferrer">Paliton Beach photo: Checawey / Wikimedia Commons · CC BY-SA 3.0</a>
+      </div>
+    </section>
+  </main>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+  <script src="/assets/common.js" defer></script>
+  <script src="/assets/auth.js" defer></script>
+</body>
+</html>

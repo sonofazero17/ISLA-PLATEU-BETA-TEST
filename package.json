@@ -1,0 +1,18 @@
+{
+  "name": "isla-plateu",
+  "version": "2.2.0",
+  "description": "ISLA-PLATEU: Restaurant Locator and Reservation System for Selected Restaurants in Siquijor",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --env-file-if-exists=.env server.js",
+    "backup": "node scripts/backup.js",
+    "restore": "node scripts/restore.js",
+    "create-user": "node create-user.js",
+    "test": "node tests/applications-test.js && node tests/provisioning-test.js && node tests/heading-test.js"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "license": "UNLICENSED"
+}

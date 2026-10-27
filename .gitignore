@@ -1,0 +1,18 @@
+# Database files and backups: they contain accounts and password hashes. NEVER commit them.
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/*.db.before-restore-*
+data/backups/
+*.db
+*.db-wal
+*.db-shm
+backups/
+
+# Secrets and local settings
+.env
+.env.*
+!.env.example
+
+node_modules/
+*.log

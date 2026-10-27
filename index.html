@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123B4A">
+  <title>ISLA-PLATEU | Restaurant Locator for Siquijor</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/assets/auth.css">
+  <link rel="stylesheet" href="/assets/app.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="ISLA-PLATEU home"><img src="/assets/logo.svg" alt="" width="42" height="42"><span><strong>ISLA-PLATEU</strong><small>RESTAURANT LOCATOR</small></span></a>
+    <nav class="topbar-right" aria-label="Main">
+      <span class="island-pill"><i data-lucide="map-pin" class="icon"></i> Siquijor Island, PH</span>
+      <div id="guestNav" class="topbar-group">
+        <a class="btn btn-quiet" href="/login?next=/map"><i data-lucide="log-in" class="icon"></i><span>Log In</span></a>
+        <a class="btn btn-primary" href="/register"><i data-lucide="user-plus" class="icon"></i><span class="label-hide-sm">Create Account</span></a>
+      </div>
+      <div id="userNav" class="topbar-group hidden">
+        <a id="dashLink" class="btn btn-quiet" href="/account"><i data-lucide="house" class="icon"></i><span class="label-hide-sm">My Account</span></a>
+        <div id="bellMount" class="bell-wrap"></div>
+        <div class="user-chip">
+          <div class="user-meta"><strong id="userName">…</strong><span id="userRole"></span></div>
+          <button class="btn btn-quiet" type="button" data-logout title="Log out"><i data-lucide="log-out" class="icon"></i><span>Log Out</span></button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="app-shell">
+    <section class="intro">
+      <div>
+        <p class="eyebrow">DISCOVER LOCAL DINING</p>
+        <h1>Find your next <em>island</em> meal.</h1>
+        <p class="intro-copy">Browse the participating restaurants of Siquijor, see them on the map, and get directions. Pins marked approximate are pending confirmation by the restaurant.</p>
+      </div>
+      <div class="intro-stat"><span class="stat-icon"><i data-lucide="utensils" class="icon"></i></span><span><strong id="restaurantCount">5</strong><small>participating restaurants</small></span></div>
+    </section>
+
+    <section class="workspace">
+      <aside class="sidebar">
+        <div class="search-wrap">
+          <i data-lucide="search" class="icon" aria-hidden="true"></i>
+          <input id="searchInput" type="search" placeholder="Search name or location…" aria-label="Search restaurants">
+          <kbd title="Press / to search">/</kbd>
+        </div>
+        <div class="filter-title"><i data-lucide="sliders-horizontal" class="icon"></i> Filters</div>
+        <div class="filter-row" role="group" aria-label="Filters">
+          <label class="filter-field"><span>Municipality</span>
+            <select id="municipalityFilter">
+              <option value="">All municipalities</option>
+            </select>
+          </label>
+          <label class="filter-field"><span>Category</span>
+            <select id="categoryFilter">
+              <option value="">All categories</option>
+            </select>
+          </label>
+        </div>
+        <div class="directory-heading">
+          <div><h2>Restaurant directory</h2><p id="resultSummary">Showing project entries</p></div>
+          <span class="count-chip" id="visibleCount">5</span>
+        </div>
+        <div id="restaurantList" class="restaurant-list" aria-live="polite">
+          <div class="loading-state"><i data-lucide="loader-circle" class="icon spin"></i> Loading restaurants…</div>
+        </div>
+        <div id="emptyState" class="empty-state hidden">
+          <span><i data-lucide="search" class="icon"></i></span><strong>No restaurants found</strong><p>Try another name or change your filters.</p>
+          <button id="clearFiltersBtn" class="button button-quiet">Clear filters</button>
+        </div>
+        <div class="sidebar-foot"><span class="legend-dot pending"></span> Location pending verification <a href="#dataNotes"><i data-lucide="circle-help" class="icon"></i>Why?</a></div>
+      </aside>
+
+      <section class="map-panel" aria-label="Interactive map of Siquijor">
+        <div class="map-heading">
+          <div><span class="map-kicker">EXPLORE THE ISLAND</span><h2>Siquijor, Philippines</h2></div>
+          <div class="map-actions">
+            <button id="backToListBtn" class="map-button mobile-only" type="button" title="Back to the restaurant list"><i data-lucide="arrow-left" class="icon"></i> List</button>
+            <button id="myLocationBtn" class="map-button" type="button"><i data-lucide="locate-fixed" class="icon"></i> <span id="trackBtnLabel">Track my location</span></button>
+            <button id="resetMapBtn" class="map-button icon-button" type="button" title="Reset map view" aria-label="Reset map view"><i data-lucide="rotate-ccw" class="icon"></i></button>
+          </div>
+        </div>
+        <div class="map-frame">
+          <div id="map"></div>
+          <div id="mapOverlays" class="map-overlays"></div>
+          <div id="mapStatus" class="map-status" role="status" aria-live="polite"><i data-lucide="loader-circle" class="icon spin"></i><span>Loading map…</span></div>
+        </div>
+        <div class="map-legend"><span><i class="legend-dot confirmed"></i> Verified pin</span><span><i class="legend-dot approximate"></i> Approximate pin</span><span><i class="legend-dot pending"></i> Address link (pin pending)</span></div>
+        <div class="map-disclaimer">Map data © OpenStreetMap contributors. Approximate pins need final confirmation; listings without coordinates open in Google Maps instead of using guessed pins.</div>
+      </section>
+    </section>
+
+    <section id="dataNotes" class="notice">
+      <div class="notice-icon"><i data-lucide="circle-help" class="icon"></i></div>
+      <div><strong>Location data transparency</strong><p>LA Candura and Dagsa Resto Bar have approximate pins based on public listings. Administrators set and verify locations from the admin dashboard. Check every pin against the real venue before treating it as verified. Confirm the spelling “Luka Loko” versus public listings “Luca Loko Restaurant.”</p></div>
+    </section>
+    <footer><span>ISLA-PLATEU <span class="footer-dot">•</span> Siquijor State College capstone project</span><span>Built with Leaflet &amp; OpenStreetMap</span></footer>
+  </main>
+
+  
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="/assets/common.js"></script>
+  <script src="/assets/app.js"></script>
+  <script src="/assets/heading.js"></script>
+  <script src="/assets/tracking.js"></script>
+  <script src="/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123B4A">
+  <title>Staff Application | ISLA-PLATEU</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/assets/auth.css">
+</head>
+<body class="auth-page" data-page="register-staff">
+  <main class="auth-shell single">
+    <section class="auth-hero" aria-label="Welcome to ISLA-PLATEU">
+      <a class="brand" href="/"><img src="/assets/logo.svg" alt="" width="42" height="42"><span><strong>ISLA-PLATEU</strong><small>SIQUIJOR RESTAURANT LOCATOR</small></span></a>
+      <div class="hero-copy">
+        <h2>Taste the <em>island</em>, one table at a time.</h2>
+        <p>Discover local restaurants and cafes across Siquijor, find them on the map, and plan where to eat.</p>
+        <ul class="hero-points">
+          <li><i data-lucide="map-pinned" class="icon"></i> Interactive map of Siquijor</li>
+          <li><i data-lucide="utensils" class="icon"></i> Selected local restaurants and cafes</li>
+          <li><i data-lucide="clock" class="icon"></i> Hours, contacts and directions</li>
+        </ul>
+      </div>
+    </section>
+    <section class="auth-panel">
+      <div class="auth-stack wide">
+        <div class="auth-card">
+          <div id="applyBody">
+          <h1>Apply for a staff account</h1>
+          <p class="lead">For restaurant owners, managers and staff in Siquijor. An administrator reviews every application, and you cannot log in as staff until it is approved.</p>
+          <form class="login-form" id="form-staffapp" data-form="staffapp" novalidate>
+            <div class="form-banner alert hidden" role="alert"></div>
+            <fieldset class="form-section"><legend>1. Your account</legend>
+              <div class="field-grid">
+                <div class="field">
+              <label for="staffapp-fullName">Full name</label>
+              <div class="input-wrap"><i data-lucide="user-round" class="icon"></i><input id="staffapp-fullName" name="fullName" type="text" autocomplete="name" maxlength="80" placeholder="Maria Santos" aria-describedby="err-staffapp-fullName"></div>
+              <p class="field-error" id="err-staffapp-fullName" data-error-for="fullName" role="alert"></p>
+            </div>
+                <div class="field">
+              <label for="staffapp-email">Email address</label>
+              <div class="input-wrap"><i data-lucide="mail" class="icon"></i><input id="staffapp-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" aria-describedby="err-staffapp-email"></div>
+              <p class="field-error" id="err-staffapp-email" data-error-for="email" role="alert"></p>
+            </div>
+                <div class="field">
+              <label for="staffapp-contactNumber">Your contact number</label>
+              <div class="input-wrap"><i data-lucide="phone" class="icon"></i><input id="staffapp-contactNumber" name="contactNumber" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="09XX XXX XXXX" aria-describedby="err-staffapp-contactNumber"></div>
+              <p class="field-error" id="err-staffapp-contactNumber" data-error-for="contactNumber" role="alert"></p>
+            </div>
+                <div class="field">
+              <label for="staffapp-password">Password</label>
+              <div class="input-wrap has-toggle"><i data-lucide="lock" class="icon"></i><input id="staffapp-password" name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" aria-describedby="err-staffapp-password"><button type="button" class="toggle-pw" data-target="staffapp-password" aria-label="Show password" aria-pressed="false" title="Show password"><i data-lucide="eye" class="icon"></i></button></div>
+              <p class="hint">8+ characters, with a letter and a number.</p><p class="field-error" id="err-staffapp-password" data-error-for="password" role="alert"></p>
+            </div>
+                <div class="field">
+              <label for="staffapp-confirmPassword">Confirm password</label>
+              <div class="input-wrap has-toggle"><i data-lucide="lock" class="icon"></i><input id="staffapp-confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Re-enter your password" aria-describedby="err-staffapp-confirmPassword"><button type="button" class="toggle-pw" data-target="staffapp-confirmPassword" aria-label="Show password" aria-pressed="false" title="Show password"><i data-lucide="eye" class="icon"></i></button></div>
+              <p class="field-error" id="err-staffapp-confirmPassword" data-error-for="confirmPassword" role="alert"></p>
+            </div>
+              </div>
+            </fieldset>
+            <fieldset class="form-section"><legend>2. Your restaurant</legend>
+              <div class="choice-row" role="radiogroup" aria-label="Restaurant type">
+                <label><input type="radio" name="restaurantMode" value="existing" checked> It is already listed</label>
+                <label><input type="radio" name="restaurantMode" value="new"> Register a new restaurant</label>
+              </div>
+              <p class="field-error" data-error-for="restaurantMode" role="alert"></p>
+              <div id="existingBlock" class="field-grid">
+                <div class="field full">
+                  <label for="staffapp-restaurantId">Choose your restaurant</label>
+                  <select id="staffapp-restaurantId" name="restaurantId" aria-describedby="err-staffapp-restaurantId"><option value="">Loading restaurants…</option></select>
+                  <p class="field-error" id="err-staffapp-restaurantId" data-error-for="restaurantId" role="alert"></p>
+                </div>
+              </div>
+              <div id="newBlock" class="field-grid" hidden>
+                <div class="field full">
+              <label for="staffapp-restaurantName">Official restaurant name</label>
+              <div class="input-wrap no-icon"><input id="staffapp-restaurantName" name="restaurantName" type="text" autocomplete="organization" maxlength="100" placeholder="As shown on your business permit" aria-describedby="err-staffapp-restaurantName"></div>
+              <p class="field-error" id="err-staffapp-restaurantName" data-error-for="restaurantName" role="alert"></p>
+            </div>
+                <div class="field">
+              <label for="staffapp-restaurantContact">Restaurant contact number</label>
+              <div class="input-wrap"><i data-lucide="phone" class="icon"></i><input id="staffapp-restaurantContact" name="restaurantContact" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="09XX XXX XXXX or (035) XXX XXXX" aria-describedby="err-staffapp-restaurantContact"></div>
+              <p class="field-error" id="err-staffapp-restaurantContact" data-error-for="restaurantContact" role="alert"></p>
+            </div>
+                <div class="field">
+              <label for="staffapp-category">Category</label>
+              <select id="staffapp-category" name="category" aria-describedby="err-staffapp-category"><option value="">Choose a category</option><option value="Restaurant">Restaurant</option><option value="Cafe">Cafe</option><option value="Bar & Grill">Bar & Grill</option><option value="Bakery">Bakery</option><option value="Other">Other</option></select>
+              <p class="field-error" id="err-staffapp-category" data-error-for="category" role="alert"></p>
+            </div>
+                <div class="field">
+              <label for="staffapp-municipality">Municipality</label>
+              <select id="staffapp-municipality" name="municipality" aria-describedby="err-staffapp-municipality"><option value="">Choose a municipality</option><option value="Enrique Villanueva">Enrique Villanueva</option><option value="Larena">Larena</option><option value="Lazi">Lazi</option><option value="Maria">Maria</option><option value="San Juan">San Juan</option><option value="Siquijor">Siquijor</option></select>
+              <p class="field-error" id="err-staffapp-municipality" data-error-for="municipality" role="alert"></p>
+            </div>
+                <div class="field">
+              <label for="staffapp-barangay">Barangay</label>
+              <div class="input-wrap no-icon"><input id="staffapp-barangay" name="barangay" type="text" autocomplete="address-level3" maxlength="60" placeholder="e.g. Poblacion" aria-describedby="err-staffapp-barangay"></div>
+              <p class="field-error" id="err-staffapp-barangay" data-error-for="barangay" role="alert"></p>
+            </div>
+                <div class="field full">
+              <label for="staffapp-restaurantAddress">Street / landmark address</label>
+              <div class="input-wrap no-icon"><input id="staffapp-restaurantAddress" name="restaurantAddress" type="text" autocomplete="street-address" maxlength="200" placeholder="Street, purok or landmark" aria-describedby="err-staffapp-restaurantAddress"></div>
+              <p class="field-error" id="err-staffapp-restaurantAddress" data-error-for="restaurantAddress" role="alert"></p>
+            </div>
+                <div class="field full">
+              <label for="staffapp-description">Restaurant description</label>
+              <textarea id="staffapp-description" name="description" maxlength="1000" placeholder="What do you serve? What makes it special?" aria-describedby="err-staffapp-description"></textarea>
+              <p class="field-error" id="err-staffapp-description" data-error-for="description" role="alert"></p>
+            </div>
+              </div>
+            </fieldset>
+            <fieldset class="form-section"><legend>3. Verification</legend>
+              <div class="field-grid">
+                <div class="field">
+              <label for="staffapp-position">Your position at the restaurant</label>
+              <select id="staffapp-position" name="position" aria-describedby="err-staffapp-position"><option value="">Choose your position</option><option value="Owner">Owner</option><option value="Manager">Manager</option><option value="Staff">Staff member</option></select>
+              <p class="field-error" id="err-staffapp-position" data-error-for="position" role="alert"></p>
+            </div>
+                <div class="field">
+              <label for="staffapp-permitNumber">Business permit / registration no.</label>
+              <div class="input-wrap no-icon"><input id="staffapp-permitNumber" name="permitNumber" type="text" autocomplete="off" maxlength="60" placeholder="e.g. Mayor’s permit number" aria-describedby="err-staffapp-permitNumber"></div>
+              <p class="field-error" id="err-staffapp-permitNumber" data-error-for="permitNumber" role="alert"></p>
+            </div>
+                <div class="field full">
+              <label for="staffapp-note">Anything else the administrator should know <span class="opt">(optional)</span></label>
+              <textarea id="staffapp-note" name="note" maxlength="500" placeholder="For example, who can confirm your role, or a website or social page." aria-describedby="err-staffapp-note"></textarea>
+              <p class="field-error" id="err-staffapp-note" data-error-for="note" role="alert"></p>
+            </div>
+              </div>
+            </fieldset>
+            <button class="btn btn-primary btn-block" id="submit-staffapp" type="submit" data-label="Submit application" data-loading="Submitting…">
+              <i data-lucide="arrow-right" class="icon btn-icon"></i><i data-lucide="loader-circle" class="icon spinner"></i><span class="submit-label">Submit application</span>
+            </button>
+          </form>
+          <p class="switch-line">Already applied or approved? <a href="/login?role=staff"><i data-lucide="log-in" class="icon"></i>Staff login</a></p>
+          <p class="switch-line" style="margin-top:8px">Just want to browse and book? <a href="/register">Create a customer account</a></p>
+          </div>
+          <div id="doneBody" class="done-panel hidden" role="status">
+            <div class="done-icon"><i data-lucide="circle-check" class="icon"></i></div>
+            <h1>Application submitted</h1>
+            <p class="lead">Thank you. Your application is <strong>pending administrator review</strong>. You cannot log in as staff until it is approved. When you try to log in, the Staff login will show you the current status.</p>
+            <div class="cta-row"><a class="btn btn-primary" href="/login?role=staff"><i data-lucide="log-in" class="icon"></i>Go to Staff login</a><a class="btn btn-quiet" href="/"><i data-lucide="house" class="icon"></i>Back to home</a></div>
+          </div>
+        </div>
+        <a class="photo-credit" href="https://commons.wikimedia.org/wiki/File:Paliton_Beach,_Siquijor,_Philippines.JPG" target="_blank" rel="noopener noreferrer">Paliton Beach photo: Checawey / Wikimedia Commons · CC BY-SA 3.0</a>
+      </div>
+    </section>
+  </main>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+  <script src="/assets/common.js" defer></script>
+  <script src="/assets/auth.js" defer></script>
+</body>
+</html>

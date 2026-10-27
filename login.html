@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123B4A">
+  <title>Log In | ISLA-PLATEU</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/assets/auth.css">
+</head>
+<body class="auth-page" data-page="login">
+  <main class="auth-shell">
+    <section class="auth-hero" aria-label="Welcome to ISLA-PLATEU">
+      <a class="brand" href="/"><img src="/assets/logo.svg" alt="" width="42" height="42"><span><strong>ISLA-PLATEU</strong><small>SIQUIJOR RESTAURANT LOCATOR</small></span></a>
+      <div class="hero-copy">
+        <h2>Taste the <em>island</em>, one table at a time.</h2>
+        <p>Discover local restaurants and cafes across Siquijor, find them on the map, and plan where to eat.</p>
+        <ul class="hero-points">
+          <li><i data-lucide="map-pinned" class="icon"></i> Interactive map of Siquijor</li>
+          <li><i data-lucide="utensils" class="icon"></i> Selected local restaurants and cafes</li>
+          <li><i data-lucide="clock" class="icon"></i> Hours, contacts and directions</li>
+        </ul>
+      </div>
+    </section>
+    <section class="auth-panel">
+      <div class="auth-stack">
+        <div class="auth-card">
+          <h1>Welcome back</h1>
+          <p class="lead" id="roleLead">Log in to find and compare restaurants across Siquijor.</p>
+          <fieldset class="role-picker">
+            <legend>Sign in as</legend>
+            <div class="role-options" role="radiogroup" aria-label="Login type">
+              <label><input type="radio" name="roleChoice" value="CUSTOMER" checked><span><i data-lucide="user-round" class="icon"></i>Customer</span></label>
+              <label><input type="radio" name="roleChoice" value="RESTAURANT_STAFF"><span><i data-lucide="utensils" class="icon"></i>Staff</span></label>
+              <label><input type="radio" name="roleChoice" value="ADMINISTRATOR"><span><i data-lucide="settings" class="icon"></i>Admin</span></label>
+            </div>
+          </fieldset>
+          <form class="login-form" id="form-customer" data-portal="CUSTOMER" data-form="customer" novalidate>
+            <div class="form-banner alert hidden" role="alert"></div>
+            <div class="field">
+              <label for="customer-email">Email address</label>
+              <div class="input-wrap"><i data-lucide="user-round" class="icon"></i><input id="customer-email" name="email" type="email" autocomplete="username" inputmode="email" placeholder="you@example.com" aria-describedby="err-customer-email"></div>
+              <p class="field-error" id="err-customer-email" data-error-for="email" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="customer-password">Password</label>
+              <div class="input-wrap has-toggle"><i data-lucide="lock" class="icon"></i><input id="customer-password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" aria-describedby="err-customer-password"><button type="button" class="toggle-pw" data-target="customer-password" aria-label="Show password" aria-pressed="false" title="Show password"><i data-lucide="eye" class="icon"></i></button></div>
+              <p class="field-error" id="err-customer-password" data-error-for="password" role="alert"></p>
+            </div>
+            <div class="check-row"><label><input type="checkbox" name="remember" id="customer-remember"> Remember me</label></div>
+            <button class="btn btn-primary btn-block" id="submit-customer" type="submit" data-label="Log In" data-loading="Logging in…">
+              <i data-lucide="log-in" class="icon btn-icon"></i><i data-lucide="loader-circle" class="icon spinner"></i><span class="submit-label">Log In</span>
+            </button>
+            <p class="switch-line">New to ISLA-PLATEU? <a href="/register"><i data-lucide="user-plus" class="icon"></i>Create Account</a></p>
+          </form>
+          <form class="login-form" id="form-staff" data-portal="RESTAURANT_STAFF" data-form="staff" novalidate hidden>
+            <div class="form-banner alert hidden" role="alert"></div>
+            <div class="field">
+              <label for="staff-email">Email address</label>
+              <div class="input-wrap"><i data-lucide="user-round" class="icon"></i><input id="staff-email" name="email" type="email" autocomplete="username" inputmode="email" placeholder="you@example.com" aria-describedby="err-staff-email"></div>
+              <p class="field-error" id="err-staff-email" data-error-for="email" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="staff-password">Password</label>
+              <div class="input-wrap has-toggle"><i data-lucide="lock" class="icon"></i><input id="staff-password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" aria-describedby="err-staff-password"><button type="button" class="toggle-pw" data-target="staff-password" aria-label="Show password" aria-pressed="false" title="Show password"><i data-lucide="eye" class="icon"></i></button></div>
+              <p class="field-error" id="err-staff-password" data-error-for="password" role="alert"></p>
+            </div>
+            <div class="check-row"><label><input type="checkbox" name="remember" id="staff-remember"> Remember me</label></div>
+            <button class="btn btn-primary btn-block" id="submit-staff" type="submit" data-label="Log In" data-loading="Logging in…">
+              <i data-lucide="log-in" class="icon btn-icon"></i><i data-lucide="loader-circle" class="icon spinner"></i><span class="submit-label">Log In</span>
+            </button>
+            <p class="switch-line">Run a restaurant in Siquijor? <a href="/register-staff"><i data-lucide="user-plus" class="icon"></i>Apply for a staff account</a></p><p class="hint center">Staff accounts are approved by the administrator.</p>
+          </form>
+          <form class="login-form" id="form-admin" data-portal="ADMINISTRATOR" data-form="admin" novalidate hidden>
+            <div class="form-banner alert hidden" role="alert"></div>
+            <div class="field">
+              <label for="admin-email">Email address</label>
+              <div class="input-wrap"><i data-lucide="user-round" class="icon"></i><input id="admin-email" name="email" type="email" autocomplete="username" inputmode="email" placeholder="you@example.com" aria-describedby="err-admin-email"></div>
+              <p class="field-error" id="err-admin-email" data-error-for="email" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="admin-password">Password</label>
+              <div class="input-wrap has-toggle"><i data-lucide="lock" class="icon"></i><input id="admin-password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" aria-describedby="err-admin-password"><button type="button" class="toggle-pw" data-target="admin-password" aria-label="Show password" aria-pressed="false" title="Show password"><i data-lucide="eye" class="icon"></i></button></div>
+              <p class="field-error" id="err-admin-password" data-error-for="password" role="alert"></p>
+            </div>
+            <div class="check-row"><label><input type="checkbox" name="remember" id="admin-remember"> Remember me</label></div>
+            <button class="btn btn-primary btn-block" id="submit-admin" type="submit" data-label="Log In" data-loading="Logging in…">
+              <i data-lucide="log-in" class="icon btn-icon"></i><i data-lucide="loader-circle" class="icon spinner"></i><span class="submit-label">Log In</span>
+            </button>
+            <p class="hint center">Administrator accounts are created by the system administrator. There is no public sign-up.</p>
+          </form>
+          <p class="switch-line"><a href="/"><i data-lucide="arrow-left" class="icon"></i>Back to home</a></p>
+        </div>
+        <a class="photo-credit" href="https://commons.wikimedia.org/wiki/File:Paliton_Beach,_Siquijor,_Philippines.JPG" target="_blank" rel="noopener noreferrer">Paliton Beach photo: Checawey / Wikimedia Commons · CC BY-SA 3.0</a>
+      </div>
+    </section>
+  </main>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+  <script src="/assets/common.js" defer></script>
+  <script src="/assets/auth.js" defer></script>
+</body>
+</html>
