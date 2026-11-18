@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123B4A">
+  <title>My Account | ISLA-PLATEU</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/assets/auth.css">
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body data-page="account">
+  <header class="dash-top">
+    <a class="brand" href="/"><img src="/assets/logo.svg" alt="" width="42" height="42"><span><strong>ISLA-PLATEU</strong><small>MY ACCOUNT</small></span></a>
+    <div class="user-chip">
+      <a class="btn btn-quiet" href="/map" title="Restaurant map"><i data-lucide="map-pinned" class="icon"></i><span class="label-hide-sm">Map</span></a>
+      <div id="bellMount" class="bell-wrap"></div>
+      <div class="user-meta"><strong id="userName">…</strong><span id="userRole"></span></div>
+      <button class="btn btn-quiet" type="button" data-change-password title="Change password"><i data-lucide="settings" class="icon"></i><span class="label-hide-sm">Password</span></button>
+      <button class="btn btn-quiet" type="button" data-logout title="Log out"><i data-lucide="log-out" class="icon"></i><span>Log Out</span></button>
+    </div>
+  </header>
+  <main class="dash-main">
+    <h1>Hello, <span id="welcomeName">there</span></h1>
+    <p class="lead">Follow your reservations, advance orders and messages. To make a new one, open a restaurant on the <a href="/map">map</a>.</p>
+    <div id="tabsRoot">
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" data-tab="reservations">Reservations</button>
+        <button class="tab" role="tab" data-tab="orders">Advance orders</button>
+        <button class="tab" role="tab" data-tab="messages">Messages</button>
+      </div>
+      <section class="tab-panel" data-panel="reservations"><div id="resList" class="stack"></div></section>
+      <section class="tab-panel" data-panel="orders"><div id="ordList" class="stack"></div></section>
+      <section class="tab-panel" data-panel="messages"><div id="msgRoot"></div></section>
+    </div>
+  </main>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+  <script src="/assets/common.js" defer></script>
+  <script src="/assets/app.js" defer></script>
+  <script src="/assets/account.js" defer></script>
+</body>
+</html>

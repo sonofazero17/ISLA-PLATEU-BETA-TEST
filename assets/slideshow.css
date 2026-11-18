@@ -1,0 +1,48 @@
+/* Photo slideshow layers stay behind the page content and never intercept interaction. */
+.slides { position: absolute; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+.slide-layer { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.4s ease-in-out; will-change: opacity; }
+.slide-layer.on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .slide-layer { transition: none; } }
+.has-slides { position: relative; isolation: isolate; }
+.has-slides::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--slide-overlay, linear-gradient(105deg, rgba(5, 30, 39, .8), rgba(5, 30, 39, .5) 60%, rgba(5, 30, 39, .4))); }
+.has-slides .photo-credit { display: none; } /* the built-in static credit is replaced by the live one below */
+.slide-meta { position: absolute; left: 14px; right: 14px; bottom: 8px; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 11px; line-height: 1.3; color: rgba(255, 255, 255, .92); text-shadow: 0 1px 4px rgba(0, 0, 0, .85); pointer-events: none; }
+.slide-left { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.slide-credit { position: relative; text-align: right; }
+.slide-meta summary, .slide-meta a, .slide-pause { pointer-events: auto; }
+.slide-credit a { color: inherit; text-decoration: underline; }
+.slide-credit summary { cursor: pointer; list-style: none; }
+.slide-credit summary::-webkit-details-marker { display: none; }
+.slide-credit-list { position: absolute; right: 0; bottom: calc(100% + 8px); z-index: 3; display: grid; gap: 6px; width: min(420px, 80vw); max-height: 38vh; overflow: auto; padding: 10px 12px; border: 1px solid rgba(255, 255, 255, .25); border-radius: 12px; background: rgba(18, 35, 36, .96); color: #fff; text-align: left; box-shadow: 0 8px 24px rgba(0, 0, 0, .28); }
+.slide-credit-item { display: block; }
+.slide-pause { display: inline-grid; place-items: center; width: 28px; height: 28px; flex: none; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .55); background: rgba(0, 0, 0, .35); color: #fff; cursor: pointer; padding: 0; }
+.slide-pause:hover, .slide-pause:focus-visible { background: rgba(0, 0, 0, .6); outline: 2px solid #fff; outline-offset: 2px; }
+@media (max-width: 640px) { .slide-meta { font-size: 10px; left: 10px; right: 10px; } .slide-caption { display: none; } }
+
+/* The map collage is a repeated local-photo texture that moves as one lightweight layer. */
+.app-shell[data-slideshow="map"] { position: relative; isolation: isolate; border-radius: 24px; background: linear-gradient(125deg, #173F46, #9C6043 58%, #315B51); }
+.app-shell.has-collage::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; background: linear-gradient(110deg, rgba(43, 35, 27, .42), rgba(30, 43, 41, .34) 60%, rgba(76, 46, 28, .4)); }
+.food-collage { position: absolute; inset: 0; z-index: -2; border-radius: inherit; background-color: #F2EDE4; background-repeat: repeat; background-size: 1600px 1200px; background-position: 0 0; animation: map-collage-diagonal 100s linear infinite; pointer-events: none; will-change: background-position; }
+.food-collage.is-paused { animation-play-state: paused; }
+@keyframes map-collage-diagonal { to { background-position: -1600px 1200px; } }
+.app-shell[data-slideshow="map"] .intro { position: relative; color: #fff; padding: clamp(20px, 3vw, 34px) clamp(18px, 3vw, 34px) 42px; }
+.app-shell[data-slideshow="map"] .intro h1,
+.app-shell[data-slideshow="map"] .intro h1 em { color: #fff; text-shadow: 0 2px 14px rgba(0, 0, 0, .4); }
+.app-shell[data-slideshow="map"] .intro h1 em,
+.app-shell[data-slideshow="map"] .eyebrow { color: #F7C9B4; }
+.app-shell[data-slideshow="map"] .intro-copy { color: #EAF6F3; text-shadow: 0 1px 8px rgba(0, 0, 0, .35); }
+.app-shell.has-collage .sidebar,
+.app-shell.has-collage .map-panel { background: rgba(255, 255, 255, .92); backdrop-filter: blur(3px); }
+.app-shell.has-collage .slide-info-host { position: relative; }
+.app-shell[data-slideshow="map"] footer { color: rgba(255, 255, 255, .94); text-shadow: 0 1px 5px rgba(0, 0, 0, .65); }
+@media (max-width: 1000px) {
+  .food-collage { background-size: 1200px 900px; animation-name: map-collage-diagonal-tablet; }
+}
+@keyframes map-collage-diagonal-tablet { to { background-position: -1200px 900px; } }
+@media (max-width: 640px) {
+  .food-collage { background-size: 1000px 750px; animation-name: map-collage-diagonal-mobile; animation-duration: 115s; }
+}
+@keyframes map-collage-diagonal-mobile { to { background-position: -1000px 750px; } }
+@media (prefers-reduced-motion: reduce) {
+  .slide-layer, .food-collage { transition: none; animation: none; }
+}
