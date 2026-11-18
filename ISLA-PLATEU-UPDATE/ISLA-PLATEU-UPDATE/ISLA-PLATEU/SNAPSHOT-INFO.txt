@@ -1,0 +1,17 @@
+ISLA-PLATEU working snapshot, taken 2026-11-16T04:05:40
+
+This is a point-in-time copy of the project while development continues. It is independent of the working project.
+Phases 1-10 are implemented and tested. Phase 11 (final security and full-system testing) is largely done:
+security-test.js, e2e-test.js and the browser tests in tests/browser/ pass. Still in progress at this moment:
+ - letting an applicant upload the restaurant logo and profile image during the staff application (not started in code yet);
+ - final documentation (docs/UPGRADE_NOTES.md, SECURITY.md) and the final full re-run.
+Run the automated tests with:  npm test   (Node 22 or newer, no packages to install).
+Not included on purpose: databases, uploaded files, backups, .env files and keys (private data).
+
+
+Update 2026-11-16: Implemented the six-digit Gmail-based password recovery flow at /reset-password.
+- Added Find Your Account, Check Your Email, Create a New Password, and success states.
+- Added 10-minute one-time verification codes, 60-second resend cooldown, five-attempt lockout, salted HMAC code hashes, and an HttpOnly short-lived recovery grant cookie.
+- Password changes reuse the existing scrypt hashing and invalidate existing sessions.
+- Nodemailer is the declared dependency for Gmail SMTP; run npm install before using configured Gmail delivery.
+- Automated suite: 914 passed, 0 failed in the offline test environment. Live Gmail delivery still needs the user's Gmail App Password and a real SMTP connection.

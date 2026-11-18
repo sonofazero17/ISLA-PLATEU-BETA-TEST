@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">Luca Loko Restaurant photo placeholder</title>
+  <desc id="description">Illustrated placeholder. An authorized photo of Luca Loko Restaurant has not been supplied.</desc>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#284D50"/><stop offset="1" stop-color="#A36B4D"/></linearGradient></defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1290" cy="180" r="280" fill="#F4C79D" opacity=".15"/>
+  <path d="M0 700Q405 540 800 720t800-20v200H0Z" fill="#182F35" opacity=".34"/>
+  <g fill="none" stroke="#F7D4B2" stroke-width="4" opacity=".32"><path d="M1080 600h420M1130 600V400h320v200M1095 400l195-145 195 145"/><circle cx="1290" cy="490" r="72"/><path d="M1290 418v144m-72-72h144"/></g>
+  <text x="120" y="200" fill="#F6D2B7" font-family="Arial,sans-serif" font-size="24" font-weight="700" letter-spacing="8">ISLA-PLATEU RESTAURANT FEATURE</text>
+  <text x="120" y="390" fill="#fff" font-family="Georgia,serif" font-size="88">Luca Loko Restaurant</text>
+  <text x="120" y="490" fill="#F1E9DD" font-family="Arial,sans-serif" font-size="34">Illustrated placeholder - not a restaurant photo</text>
+  <text x="120" y="550" fill="#F1E9DD" font-family="Arial,sans-serif" font-size="26">An authorized venue photo is awaiting upload by an administrator.</text>
+</svg>

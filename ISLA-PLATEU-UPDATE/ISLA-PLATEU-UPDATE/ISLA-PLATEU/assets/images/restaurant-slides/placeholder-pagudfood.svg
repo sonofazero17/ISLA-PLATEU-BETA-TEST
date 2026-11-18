@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">PagudFood Cafe photo placeholder</title>
+  <desc id="description">Illustrated placeholder. An authorized photo of PagudFood Cafe has not been supplied.</desc>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#164B50"/><stop offset="1" stop-color="#9B6848"/></linearGradient></defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1280" cy="170" r="290" fill="#F2C49A" opacity=".16"/>
+  <path d="M0 690Q420 520 820 700t780-10v210H0Z" fill="#102F39" opacity=".32"/>
+  <g fill="none" stroke="#F7D8B1" stroke-width="3" opacity=".35"><circle cx="1310" cy="490" r="170"/><circle cx="1310" cy="490" r="205"/><path d="M1150 490h320M1310 330v320"/></g>
+  <text x="120" y="200" fill="#F6D2B7" font-family="Arial,sans-serif" font-size="24" font-weight="700" letter-spacing="8">ISLA-PLATEU RESTAURANT FEATURE</text>
+  <text x="120" y="390" fill="#fff" font-family="Georgia,serif" font-size="92">PagudFood Cafe</text>
+  <text x="120" y="490" fill="#F1E9DD" font-family="Arial,sans-serif" font-size="34">Illustrated placeholder - not a restaurant photo</text>
+  <text x="120" y="550" fill="#F1E9DD" font-family="Arial,sans-serif" font-size="26">An authorized venue photo is awaiting upload by an administrator.</text>
+</svg>
