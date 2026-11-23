@@ -11,6 +11,8 @@
 3. In the terminal, run `npm install` once to install Nodemailer, then `npm start`. Open **http://localhost:3000**. Stop with `Ctrl + C`.
 4. **Local development only:** on a brand-new database the terminal prints a one-time administrator password. To choose your own, copy `.env.example` to `.env`, fill in `ADMIN_PASSWORD`, and start with `npm run dev`. The administrator is always `admin@islaplateu.local`.
 
+When this repository is opened in VS Code, its auto-push task starts automatically. After 4 seconds without file edits, it stages, commits, and pushes changes on `main`; Render then deploys the pushed commit. Git's ignore rules apply, and the watcher refuses common secret, database, backup, and upload paths. Stop it with **Tasks: Terminate Task** in the Command Palette.
+
 Nodemailer is the only npm dependency; `npm install` is required for Gmail SMTP delivery. The map, icons and fonts load from the internet. **Live Server does not work** for this project (login, roles and the database need the Node server).
 
 The database is `data/islaplateu.db` (never committed to Git). The administrator is created once and then lives in the database; restarts never change its password. See [DEPLOY_RENDER.md](DEPLOY_RENDER.md) for production.
