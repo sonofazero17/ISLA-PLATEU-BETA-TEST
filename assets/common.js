@@ -78,8 +78,11 @@
   ISLA.verifyEmail = {
     async mount(container, { email, emailSent = null, intro = "", onDone }) { // emailSent: true = just sent, false = sending failed, null = nothing was just sent
       const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+      const deliveryText = emailSent === false
+        ? `We could not send a verification code to <strong>${esc(email)}</strong> right now. Try sending a new code below.`
+        : `We sent a 6-digit code to <strong>${esc(email)}</strong>. It expires in 10 minutes. Check your spam folder if you do not see it.`;
       container.innerHTML = `<div class="verify-panel" role="group" aria-label="Verify your email address"><h2 class="verify-title">Check your email</h2>
-        <p class="verify-text">${intro ? esc(intro) + " " : ""}We sent a 6-digit code to <strong>${esc(email)}</strong>. It expires in 10 minutes. Check your spam folder if you do not see it.</p>
+        <p class="verify-text">${intro ? esc(intro) + " " : ""}${deliveryText}</p>
         <div class="alert hidden verify-msg" role="alert"></div>
         <label class="form-field"><span>Verification code</span><input class="verify-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="123456" aria-label="6-digit verification code"></label>
         <button class="btn btn-primary verify-btn" type="button">Verify email</button>
