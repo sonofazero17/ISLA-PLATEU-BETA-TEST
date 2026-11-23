@@ -1766,7 +1766,12 @@ module.exports = function createFeatures(ctx) {
     let needsVerification = false, emailSent = false;
     if (ctx.verification.enabled()) {
       run("UPDATE users SET verification_required = 1 WHERE id = ?", uid); needsVerification = true;
-      try { await ctx.verification.issue({ id: uid, email, full_name: fullName }); emailSent = true; } catch { /* they can ask for a new code */ }
+      try { await ctx.verification.issue({ id: uid, email, full_name: fullName }); emailSent = true; }
+      catch {
+        db.prepare("DELETE FROM staff_applications WHERE user_id = ?").run(uid);
+        db.prepare("DELETE FROM users WHERE id = ?").run(uid);
+        fail(503, "We could not send the verification email. Your application was not created. Please try again later.");
+      }
     }
     json(res, 201, { status: "pending", needsVerification, emailSent, email, message: "Application received. An administrator will review it. You cannot log in as staff until it is approved." });
   });

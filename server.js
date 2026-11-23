@@ -469,7 +469,11 @@ async function handle(req, res) {
       let needsVerification = false, emailSent = false;
       if (verification.enabled()) { // the account cannot log in until the person proves they control this email address
         db.prepare("UPDATE users SET verification_required = 1 WHERE id = ?").run(userId); needsVerification = true;
-        try { await verification.issue({ id: userId, email, full_name: fullName }); emailSent = true; } catch { /* they can ask for a new code */ }
+        try { await verification.issue({ id: userId, email, full_name: fullName }); emailSent = true; }
+        catch {
+          db.prepare("DELETE FROM users WHERE id = ?").run(userId);
+          return json(res, 503, { error: "We could not send the verification email. Your account was not created. Please try again later." });
+        }
       }
       return json(res, 201, { ok: true, needsVerification, emailSent, email, message: needsVerification ? "Account created. Enter the code we emailed you to verify your address." : "Account created. You can now log in." });
     }

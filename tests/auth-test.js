@@ -179,9 +179,9 @@ let tokenN = 0; const tok = () => "ok-" + (++tokenN) + "-" + Math.random().toStr
 
     /* ---- mail server problems ---- */
     smtp.rejectRcpt = true; const failReg = await reg("gus@example.com"); smtp.rejectRcpt = false;
-    ok(failReg.status === 201 && failReg.data.needsVerification === true && failReg.data.emailSent === false, "if the email cannot be sent the account is still created and the page is told to offer a resend");
+    ok(failReg.status === 503 && /account was not created/i.test(failReg.data.error), "if the verification email cannot be sent, the account is not created");
+    ok((() => { const d = db(); const n = d.prepare("SELECT COUNT(*) AS n FROM users WHERE email = 'gus@example.com'").get().n; d.close(); return n === 0; })(), "a failed verification send leaves no registration behind");
     ok(/Verification email could not be sent/.test(out) && !out.includes(smtp.pass), "the failure is logged without the mail password");
-    ok((await resend("gus@example.com")).status === 200 && codeOf(lastMail("gus@example.com")), "…and a resend works once the mail server accepts mail (a failed send did not use up the cooldown)");
     const badAuth = await (async () => { const mm = createMailer({ MAIL_PROVIDER: "smtp", SMTP_HOST: "127.0.0.1", SMTP_PORT: String(smtpPort), SMTP_SECURE: "none", SMTP_USER: smtp.user, SMTP_PASS: "wrong", MAIL_FROM: "a@isla.test" }); try { await mm.send({ to: "x@example.com", subject: "s", text: "t", html: "<p>t</p>" }); return null; } catch (e) { return e.message; } })();
     ok(badAuth && /login/.test(badAuth) && !badAuth.includes("wrong"), "wrong mail credentials give a clear error that does not echo the password");
 
@@ -334,8 +334,21 @@ let tokenN = 0; const tok = () => "ok-" + (++tokenN) + "-" + Math.random().toStr
     ok((await cc.verify(tok(), "9.9.9.9")).ok === true && cap.seen.at(-1).ip === "9.9.9.9", "the visitor's address is passed to the provider");
     ok((await c({}).verify("anything")).skipped === true, "with no CAPTCHA configured verification is skipped");
   } catch (e) { fail++; console.log("FAIL unexpected error: " + e.stack); }
-  proc.kill("SIGKILL"); smtpSrv.close(); capSrv.close();
-  fs.rmSync(dir, { recursive: true, force: true });
+  await new Promise((resolve) => {
+    if (proc.exitCode !== null) return resolve();
+    proc.once("exit", () => resolve());
+    proc.kill("SIGTERM");
+  });
+  await Promise.all([
+    new Promise((resolve) => smtpSrv.close(resolve)),
+    new Promise((resolve) => capSrv.close(resolve))
+  ]);
+  for (let i = 0; i < 20; i++) {
+    try { fs.rmSync(dir, { recursive: true, force: true }); break; } catch (e) {
+      if (e.code !== "EPERM" || i === 19) throw e;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+  }
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })();
