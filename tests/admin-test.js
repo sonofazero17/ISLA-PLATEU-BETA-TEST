@@ -45,7 +45,7 @@ const sql = (fn) => { const d = new DatabaseSync(DBFILE); try { return fn(d); } 
     const get = (p, j = admin.j) => call(j, "GET", p);
 
     /* ---- permissions on every new route ---- */
-    const routes = [["GET", "/api/admin/reservations"], ["GET", "/api/admin/orders"], ["GET", "/api/admin/payments"], ["GET", "/api/admin/tables-overview"], ["GET", "/api/admin/menus"], [ "GET", `/api/admin/restaurants/${alpha}/menu`], ["GET", `/api/admin/restaurants/${alpha}/overview`], ["GET", "/api/admin/attention"],
+    const routes = [["GET", "/api/admin/reservations"], ["GET", "/api/admin/orders"], ["GET", "/api/admin/payments"], ["GET", "/api/admin/tables-overview"], ["GET", "/api/admin/menus"], [ "GET", `/api/admin/restaurants/${alpha}/menu`], ["GET", `/api/admin/restaurants/${alpha}/overview`], ["GET", `/api/admin/restaurants/${alpha}/payment-qr`], ["POST", `/api/admin/restaurants/${alpha}/payment-qr`, {}], ["GET", "/api/admin/attention"],
       ["GET", "/api/admin/audit-search"], ["GET", "/api/admin/audit-export"], ["PATCH", "/api/admin/menu/1", { available: false }], ["DELETE", "/api/admin/menu/1", {}], ["POST", "/api/admin/users/1/resend-verification", {}], ["GET", "/api/admin/users"]];
     for (const [m, p, b] of routes) ok((await call(anon, m, p, b)).status === 401 && (await call(C1, m, p, b)).status === 403 && (await call(A.j, m, p, b)).status === 403, `${m} ${p}: guests 401, customers and staff 403`);
 
@@ -58,6 +58,11 @@ const sql = (fn) => { const d = new DatabaseSync(DBFILE); try { return fn(d); } 
     await call(A.j, "POST", "/api/staff/tables/bulk", { count: 3, capacity: 4 });
     await call(A.j, "PUT", "/api/staff/payment-account", { holderName: "Juan Dela Cruz", mobile: "09171234567" });
     await call(A.j, "POST", "/api/staff/payment-account/qr", png(2), { "Content-Type": "image/png" });
+    const privateQr = await get(`/api/admin/restaurants/${alpha}/payment-qr`);
+    ok(privateQr.status === 200 && privateQr.res.headers.get("content-type") === "image/png" && /private, no-store/.test(privateQr.res.headers.get("cache-control")), "admin can view a restaurant QR only through the private QR endpoint");
+    const replaceQr = await call(admin.j, "POST", `/api/admin/restaurants/${alpha}/payment-qr`, png(7), { "Content-Type": "image/png" });
+    const staffQr = await call(A.j, "GET", "/api/staff/payment-account/qr");
+    ok(replaceQr.status === 200 && staffQr.status === 200 && Buffer.from(await staffQr.res.arrayBuffer()).equals(png(7)), "admin can replace a restaurant QR and staff immediately receive the new image");
     await call(A.j, "PUT", "/api/staff/payment-account", { holderName: "Juan Dela Cruz", mobile: "09171234567", orderPrepay: true, reservationFee: 0 });
     const [D, T] = ph(2, "12:00"), [RD] = ph(3);
     const o1 = (await call(C1, "POST", "/api/orders", { restaurantId: alpha, pickupDate: D, pickupTime: T, items: [{ menuItemId: tuna, qty: 2 }] })).data;
@@ -192,7 +197,11 @@ const sql = (fn) => { const d = new DatabaseSync(DBFILE); try { return fn(d); } 
     ok(exAll.split("\r\n").length > 1 && !/(^|,)"=1\+1/.test(exAll) && /"'=1\+1\+cmd/.test(exAll), "text that a spreadsheet could run as a formula is neutralised in the export");
     ok((await get("/api/admin/audit-search?action=audit.exported")).data.entries.length >= 2, "exporting the audit log is itself recorded");
   } catch (e) { fail++; console.log("FAIL unexpected error: " + e.stack); }
-  proc.kill("SIGKILL");
+  if (proc.exitCode === null && proc.signalCode === null) {
+    const exited = new Promise(resolve => proc.once("exit", resolve));
+    proc.kill("SIGKILL");
+    await exited;
+  }
   fs.rmSync(dir, { recursive: true, force: true });
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);

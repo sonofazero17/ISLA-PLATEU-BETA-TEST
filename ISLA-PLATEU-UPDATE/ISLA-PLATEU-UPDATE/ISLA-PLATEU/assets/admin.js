@@ -470,6 +470,18 @@
     const d = r.data, x = d.restaurant, n = (o, k) => (o && o[k]) || 0, pay = d.payments;
     const hasPin = x.lat !== null && x.lng !== null && Number.isFinite(Number(x.lat)) && Number.isFinite(Number(x.lng));
     const locationStatus = hasPin && x.locationStatus === "verified" ? "VERIFIED" : hasPin ? "APPROXIMATE" : "PENDING";
+    let pendingQrFile = null, pendingQrObjectUrl = null;
+    const qrImage = pay.hasQr
+      ? `<img class="pay-qr" src="/api/admin/restaurants/${encodeURIComponent(id)}/payment-qr?t=${Date.now()}" alt="Current private GCash QR code">`
+      : `<p class="muted">${pay.holderOnFile ? "No GCash QR code uploaded." : "Payment account details must be saved by restaurant staff before a QR code can be uploaded."}</p>`;
+    const qrControls = pay.demoPayment
+      ? `<span class="pill">Fixed non-scannable demo QR</span>`
+      : `<label class="btn btn-quiet small file-btn ${pay.holderOnFile ? "" : "disabled"}">${icon("upload")} ${pay.hasQr ? "Choose replacement QR" : "Upload QR code"}<input type="file" hidden accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" id="adminQrFile" ${pay.holderOnFile ? "" : "disabled"}></label>`;
+    const qrPreview = pay.demoPayment
+      ? `<p class="hint">The demonstration QR cannot be replaced with a potentially scannable image.</p>`
+      : pay.holderOnFile
+        ? `<div class="stack hidden" id="adminQrPending" style="margin-top:12px"><strong>Preview replacement QR code</strong><img class="pay-qr" id="adminQrPreview" alt="Preview of selected replacement QR code"><div class="item-actions"><button class="btn btn-primary small" type="button" data-admin-qr-save>Save / Upload QR code</button><button class="btn btn-quiet small" type="button" data-admin-qr-cancel>Cancel</button></div></div><p class="hint">JPG, JPEG, PNG or WEBP, up to 5 MB.</p>`
+        : "";
     const m = App.modal({ title: x.name, size: "wide", html: `
       ${x.cover ? `<img src="${esc(x.cover)}" alt="" style="width:100%;max-height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px">` : ""}
       <p>${x.logo ? `<img src="${esc(x.logo)}" alt="" class="food-thumb" style="display:inline-block;vertical-align:middle;margin-right:8px">` : ""}<strong>${esc(x.category)}</strong> · ${esc([x.address, x.municipality].filter(Boolean).join(", ") || "No address")} · ${esc(x.contact || "no contact")}<br><span class="muted">Hours: ${esc(x.hours || "not set")} · ${x.description ? esc(x.description) : "no description"}</span></p>
@@ -478,10 +490,40 @@
           <h3 class="detail-h">Staff</h3>${d.staff.length ? `<ul class="line-items">${d.staff.map(u => `<li><span>${esc(u.name)} <small class="muted">${esc(u.email)}</small></span><span><span class="pill ${u.status === "ACTIVE" ? "ok" : "warn"}">${esc(label(u.status))}</span> <span class="pill ${u.emailVerified ? "ok" : ""}">${u.emailVerified ? "Email verified" : "Not verified"}</span></span></li>`).join("")}</ul>` : `<p class="muted">No staff account assigned.</p>`}</div>
         <div><h3 class="detail-h">Tables and menu</h3><p>${d.tables ? `${d.tables.total} tables (${d.tables.available} free now, ${d.tables.reserved} reserved), ${d.tables.seats} seats` : "No tables set up"} · ${x.acceptsReservations ? "reservations on" : "reservations off"}</p>
           <p>Menu: ${d.menu.items} item${d.menu.items === 1 ? "" : "s"}, ${d.menu.available} available, ${d.menu.withImages} with photo · advance orders ${x.acceptsOrders ? "on" : "off"}</p>
-          <h3 class="detail-h">Payments</h3><p>GCash ${pay.gcashConfigured ? `<span class="pill ok">set up</span>` : `<span class="pill">not set up</span>`}${pay.orderPrepay ? " · orders paid by GCash" : ""}${pay.reservationFee ? ` · reservation fee ${esc(App.money(pay.reservationFee))}` : ""}${pay.extraCharges ? ` · ${pay.extraCharges} extra charge${pay.extraCharges === 1 ? "" : "s"}` : ""}<br><small class="muted">Under review ${n(pay, "UNDER_REVIEW")} · accepted ${n(pay, "ACCEPTED")} · rejected ${n(pay, "REJECTED")} · refunded ${n(pay, "REFUNDED")}. The GCash number and QR code are private and are not shown here.</small></p>
+          <h3 class="detail-h">Payments</h3><p>GCash ${pay.gcashConfigured ? `<span class="pill ok">set up</span>` : `<span class="pill">not set up</span>`}${pay.orderPrepay ? " · orders paid by GCash" : ""}${pay.reservationFee ? ` · reservation fee ${esc(App.money(pay.reservationFee))}` : ""}${pay.extraCharges ? ` · ${pay.extraCharges} extra charge${pay.extraCharges === 1 ? "" : "s"}` : ""}<br><small class="muted">Under review ${n(pay, "UNDER_REVIEW")} · accepted ${n(pay, "ACCEPTED")} · rejected ${n(pay, "REJECTED")} · refunded ${n(pay, "REFUNDED")}.</small></p>
+          ${qrImage}<div class="item-actions">${qrControls}</div>${qrPreview}
           <h3 class="detail-h">Activity</h3><p>Reservations: ${n(d.activity.reservations, "PENDING")} pending, ${n(d.activity.reservations, "CONFIRMED")} confirmed, ${n(d.activity.reservations, "COMPLETED")} completed<br>Orders: ${n(d.activity.orders, "PENDING")} pending, ${n(d.activity.orders, "ACCEPTED") + n(d.activity.orders, "PREPARING") + n(d.activity.orders, "READY")} in progress, ${n(d.activity.orders, "COMPLETED")} completed<br>Ratings: ${d.activity.reviews.count ? `${esc(d.activity.reviews.average)} from ${d.activity.reviews.count}` : "none yet"}</p></div></div>
       <div class="modal-actions" style="flex-wrap:wrap"><button class="btn btn-quiet" data-ro="menu">View menu</button><button class="btn btn-quiet" data-ro="edit">Edit details</button>${x.logo ? `<button class="btn btn-quiet" data-ro="logo">Remove logo</button>` : ""}${x.cover ? `<button class="btn btn-quiet" data-ro="cover">Remove cover image</button>` : ""}${d.location && ["PENDING", "UNDER_REVIEW"].includes(d.location.status) ? `<button class="btn btn-primary" data-ro="loc">Review location request</button>` : ""}</div>` });
+    const qrInput = m.body.querySelector("#adminQrFile");
+    const clearPendingQr = () => {
+      if (pendingQrObjectUrl) URL.revokeObjectURL(pendingQrObjectUrl);
+      pendingQrFile = null; pendingQrObjectUrl = null;
+      if (qrInput) qrInput.value = "";
+      const pending = m.body.querySelector("#adminQrPending");
+      if (pending) pending.classList.add("hidden");
+    };
+    if (qrInput) qrInput.addEventListener("change", () => {
+      const file = qrInput.files && qrInput.files[0]; if (!file) return;
+      const allowed = ["image/jpeg", "image/png", "image/webp"], ext = file.name.toLowerCase().split(".").pop();
+      if ((!allowed.includes(file.type) && !["jpg", "jpeg", "png", "webp"].includes(ext)) || file.size > 5 * 1024 * 1024) {
+        App.toast(file.size > 5 * 1024 * 1024 ? "The QR image is larger than 5 MB." : "Choose a JPG, JPEG, PNG or WEBP image.", "error");
+        clearPendingQr(); return;
+      }
+      clearPendingQr();
+      pendingQrFile = file; pendingQrObjectUrl = URL.createObjectURL(file);
+      m.body.querySelector("#adminQrPreview").src = pendingQrObjectUrl;
+      m.body.querySelector("#adminQrPending").classList.remove("hidden");
+    });
     m.body.addEventListener("click", async (e) => {
+      if (e.target.closest("[data-admin-qr-cancel]")) { clearPendingQr(); return; }
+      if (e.target.closest("[data-admin-qr-save]")) {
+        if (!pendingQrFile) { App.toast("Choose a QR image first.", "error"); return; }
+        const save = e.target.closest("[data-admin-qr-save]"); save.disabled = true; save.textContent = "Uploading...";
+        const res = await ISLA.upload(`/api/admin/restaurants/${encodeURIComponent(id)}/payment-qr`, pendingQrFile);
+        if (res.ok) { clearPendingQr(); App.toast("Restaurant payment QR code updated.", "success"); m.close(); restaurantOverview(id); }
+        else { save.disabled = false; save.textContent = "Save / Upload QR code"; App.toast(res.data.error || "QR code upload failed.", "error"); }
+        return;
+      }
       const b = e.target.closest("[data-ro]"); if (!b) return; const a = b.dataset.ro;
       if (a === "menu") { m.close(); openMenu(id); }
       else if (a === "edit") { m.close(); const res = await App.api(`/api/restaurants/${encodeURIComponent(id)}`); if (res.ok) restaurantForm(res.data.restaurant); }

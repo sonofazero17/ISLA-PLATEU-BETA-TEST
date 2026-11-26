@@ -745,6 +745,33 @@ module.exports = function createFeatures(ctx) {
     if (!a || !a.qr_file) fail(404, "No QR code uploaded yet.");
     sendPrivate(res, a.qr_file, "gcash-qr");
   });
+  add("GET", "/api/admin/restaurants/:id/payment-qr", ADMIN, async ({ res, params }) => {
+    if (!one("SELECT id FROM restaurants WHERE id = ?", params.id)) fail(404, "Restaurant not found.");
+    const a = payAccount(params.id);
+    if (!a || !a.qr_file) fail(404, "No GCash QR code has been uploaded for this restaurant.");
+    sendPrivate(res, a.qr_file, "gcash-qr");
+  });
+  add("POST", "/api/admin/restaurants/:id/payment-qr", ADMIN, async ({ req, res, user, params }) => {
+    const r = one("SELECT * FROM restaurants WHERE id = ?", params.id);
+    if (!r) { req.resume(); fail(404, "Restaurant not found."); }
+    if (r.demo_payment) { req.resume(); fail(409, "This demonstration restaurant uses a fixed, non-scannable QR code and cannot be changed."); }
+    const a = payAccount(r.id);
+    if (!a) { req.resume(); fail(409, "The restaurant must save its payment account details before a QR code can be uploaded."); }
+    let saved;
+    try { saved = uploads.savePrivateFile(await uploads.readBinary(req), { imagesOnly: true }); } catch (e) { if (e.status) fail(e.status, e.message); throw e; }
+    try {
+      db.exec("BEGIN");
+      run("UPDATE restaurant_payment_accounts SET qr_file = ?, updated_by = ?, updated_at = datetime('now') WHERE restaurant_id = ?", saved.name, user.id, r.id);
+      db.exec("COMMIT");
+    } catch (e) {
+      try { db.exec("ROLLBACK"); } catch {}
+      uploads.deletePrivateFile(saved.name);
+      throw e;
+    }
+    uploads.deletePrivateFile(a.qr_file);
+    audit(user, "payment_account.qr_replaced", "restaurant", r.id, { updatedByAdmin: true });
+    json(res, 200, { ok: true, hasQr: true });
+  });
 
   /* ---- customer ---- */
   add("GET", "/api/payments/:id", CUSTOMER, async ({ res, user, params }) => {
@@ -1411,7 +1438,7 @@ module.exports = function createFeatures(ctx) {
       location: lr ? { requestId: lr.id, status: lr.status, submittedAt: iso(lr.submitted_at), reviewedAt: iso(lr.reviewed_at), documents: cnt("SELECT COUNT(*) AS n FROM restaurant_verification_documents WHERE request_id = ?", lr.id), documentKinds: all("SELECT DISTINCT kind FROM restaurant_verification_documents WHERE request_id = ?", lr.id).map(k => k.kind) } : null,
       tables: tableSummary(r), reservationMinutes: r.reservation_minutes || 90,
       menu: { items: cnt("SELECT COUNT(*) AS n FROM menu_items WHERE restaurant_id = ?", r.id), available: cnt("SELECT COUNT(*) AS n FROM menu_items WHERE restaurant_id = ? AND available = 1", r.id), withImages: cnt("SELECT COUNT(*) AS n FROM menu_items WHERE restaurant_id = ? AND image_file != ''", r.id) },
-      payments: { gcashConfigured: payReady(r.id), orderPrepay: !!r.order_prepay, reservationFee: money(r.reservation_fee_cents), extraCharges: cnt("SELECT COUNT(*) AS n FROM restaurant_charges WHERE restaurant_id = ? AND active = 1", r.id), ...by("payments"), holderOnFile: !!acct }, // the GCash number and QR code are not shown here
+      payments: { gcashConfigured: payReady(r.id), orderPrepay: !!r.order_prepay, reservationFee: money(r.reservation_fee_cents), extraCharges: cnt("SELECT COUNT(*) AS n FROM restaurant_charges WHERE restaurant_id = ? AND active = 1", r.id), ...by("payments"), holderOnFile: !!acct, hasQr: !!(acct && acct.qr_file), demoPayment: !!r.demo_payment }, // the GCash number and QR code are not shown here
       activity: { reservations: by("reservations"), orders: by("orders"), reviews: { count: rating.n, average: rating.avg } }
     });
   });
