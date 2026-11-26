@@ -217,7 +217,11 @@ const png = (n) => Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0
     ok(files > 3, "private storage holds the QR codes and receipts");
     ok((await call(admin.j, "DELETE", "/api/admin/restaurants/alpha-grill", { confirmName: "Alpha Grill" })).status === 200 && privCount() < files, "deleting a restaurant removes its QR and receipt files");
   } catch (e) { fail++; console.log("FAIL unexpected error: " + e.stack); }
-  proc.kill("SIGKILL");
+  if (proc.exitCode === null && proc.signalCode === null) {
+    const exited = new Promise(resolve => proc.once("exit", resolve));
+    proc.kill("SIGKILL");
+    await exited;
+  }
   fs.rmSync(dir, { recursive: true, force: true });
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);

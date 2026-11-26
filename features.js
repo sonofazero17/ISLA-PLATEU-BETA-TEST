@@ -714,7 +714,6 @@ module.exports = function createFeatures(ctx) {
   });
   add("POST", "/api/staff/payment-account/qr", STAFF, async ({ req, res, user }) => {
     const r = staffRestaurant(user), a = payAccount(r.id);
-    if (r.demo_payment) { req.resume(); fail(409, "PagudFood uses a fixed, non-scannable DEMO QR code. Real or scannable payment QR uploads are disabled for this demonstration restaurant."); }
     if (!a) { req.resume(); fail(409, "Save your GCash account name and number first, then upload the QR code."); }
     let saved;
     try { saved = uploads.savePrivateFile(await uploads.readBinary(req), { imagesOnly: true }); } catch (e) { if (e.status) fail(e.status, e.message); throw e; }
@@ -734,6 +733,7 @@ module.exports = function createFeatures(ctx) {
   });
   add("DELETE", "/api/staff/payment-account/qr", STAFF, async ({ res, user }) => {
     const r = staffRestaurant(user), a = payAccount(r.id);
+    if (r.demo_payment) fail(409, "The demo QR must remain configured. Upload a replacement image instead.");
     if (!a || !a.qr_file) fail(404, "No GCash QR code has been uploaded for your restaurant.");
     run("UPDATE restaurant_payment_accounts SET qr_file = '', updated_by = ?, updated_at = datetime('now') WHERE restaurant_id = ?", user.id, r.id);
     uploads.deletePrivateFile(a.qr_file);

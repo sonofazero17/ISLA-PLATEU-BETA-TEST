@@ -46,7 +46,14 @@ async function call(j, method, p, body, extra = {}) {
     ok(tables.status === 200 && tables.data.tables.length === 6, 'six reservation tables are preloaded');
     const payCfg = await call(staff.j, 'GET', '/api/staff/payment-account');
     ok(payCfg.status === 200 && payCfg.data.demoPayment && payCfg.data.hasQr && payCfg.data.orderPrepay, 'demo payment account and QR are preconfigured');
-    ok((await call(staff.j, 'POST', '/api/staff/payment-account/qr', Buffer.from('not-an-image'), { 'Content-Type': 'image/png' })).status === 409, 'staff cannot replace the demo QR with a potentially scannable payment QR');
+    ok((await call(staff.j, 'POST', '/api/staff/payment-account/qr', Buffer.from('not-an-image'), { 'Content-Type': 'image/png' })).status === 415, 'invalid image is rejected for a demo QR replacement');
+    const staffQrReplacement = Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,...Array(200).fill(8)]);
+    const staffQrUpdate = await call(staff.j, 'POST', '/api/staff/payment-account/qr', staffQrReplacement, { 'Content-Type': 'image/png' });
+    const qrAfterStaffEdit = await call(staff.j, 'GET', '/api/staff/payment-account/qr');
+    ok(staffQrUpdate.status === 200 && qrAfterStaffEdit.status === 200 && Buffer.from(await qrAfterStaffEdit.res.arrayBuffer()).equals(staffQrReplacement),
+      'restaurant staff can replace their demo QR image');
+    ok((await call(staff.j, 'DELETE', '/api/staff/payment-account/qr', {})).status === 409,
+      'staff must replace rather than remove the required demo QR');
     const replacementQr = Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,...Array(200).fill(9)]);
     const qrUpdate = await call(admin.j, 'POST', '/api/admin/restaurants/luka-loko/payment-qr', replacementQr, { 'Content-Type': 'image/png' });
     const staffQr = await call(staff.j, 'GET', '/api/staff/payment-account/qr');

@@ -45,8 +45,12 @@ async function call(j, method, p, body, extra = {}) {
     const tables = await call(anon, 'GET', '/api/restaurants/the-cafe-infinite/tables');
     ok(tables.status === 200 && tables.data.tables.length === 6, 'six reservation tables are preloaded');
     const payCfg = await call(staff.j, 'GET', '/api/staff/payment-account');
-    ok(payCfg.status === 200 && payCfg.data.demoPayment && payCfg.data.hasQr && payCfg.data.orderPrepay, 'demo payment account and fixed QR are preconfigured');
-    ok((await call(staff.j, 'POST', '/api/staff/payment-account/qr', Buffer.from('not-an-image'), { 'Content-Type': 'image/png' })).status === 409, 'staff cannot replace the demo QR with a potentially scannable payment QR');
+    ok(payCfg.status === 200 && payCfg.data.demoPayment && payCfg.data.hasQr && payCfg.data.orderPrepay, 'demo payment account and QR are preconfigured');
+    const demoQr = Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,...Array(200).fill(6)]);
+    const qrUpdate = await call(staff.j, 'POST', '/api/staff/payment-account/qr', demoQr, { 'Content-Type': 'image/png' });
+    const staffQr = await call(staff.j, 'GET', '/api/staff/payment-account/qr');
+    ok(qrUpdate.status === 200 && staffQr.status === 200 && Buffer.from(await staffQr.res.arrayBuffer()).equals(demoQr),
+      'Cafe Infinite staff can replace its demo QR image');
     const upd = await call(staff.j, 'PATCH', '/api/staff/restaurant', { name: 'The Cafe Infinite', category: 'Cafe / Restaurant', address: 'Tubod, San Juan, Siquijor, Philippines', municipality: 'Siquijor', description: 'Updated staff demo description' });
     const refreshed = await call(anon, 'GET', '/api/restaurants/the-cafe-infinite');
     ok(upd.status === 200 && refreshed.data.restaurant.name === 'The Cafe Infinite' && refreshed.data.restaurant.address === 'Tubod, San Juan, Siquijor, Philippines', 'Cafe Infinite staff edits are reflected on the customer restaurant profile');

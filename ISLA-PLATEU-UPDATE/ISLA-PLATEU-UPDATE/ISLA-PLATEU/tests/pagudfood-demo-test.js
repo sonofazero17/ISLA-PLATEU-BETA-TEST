@@ -44,8 +44,12 @@ async function call(j, method, p, body, extra = {}) {
     const tables = await call(anon, 'GET', '/api/restaurants/pagudfood/tables');
     ok(tables.status === 200 && tables.data.tables.length === 7, 'seven reservation tables are preloaded');
     const payCfg = await call(staff.j, 'GET', '/api/staff/payment-account');
-    ok(payCfg.status === 200 && payCfg.data.demoPayment && payCfg.data.hasQr && payCfg.data.orderPrepay, 'demo payment account and fixed QR are preconfigured');
-    ok((await call(staff.j, 'POST', '/api/staff/payment-account/qr', Buffer.from('not-an-image'), { 'Content-Type': 'image/png' })).status === 409, 'staff cannot replace the demo QR with a potentially scannable payment QR');
+    ok(payCfg.status === 200 && payCfg.data.demoPayment && payCfg.data.hasQr && payCfg.data.orderPrepay, 'demo payment account and QR are preconfigured');
+    const demoQrReplacement = Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,...Array(200).fill(5)]);
+    const qrUpdate = await call(staff.j, 'POST', '/api/staff/payment-account/qr', demoQrReplacement, { 'Content-Type': 'image/png' });
+    const staffQr = await call(staff.j, 'GET', '/api/staff/payment-account/qr');
+    ok(qrUpdate.status === 200 && staffQr.status === 200 && Buffer.from(await staffQr.res.arrayBuffer()).equals(demoQrReplacement),
+      'PagudFood staff can replace its demo QR image');
     const upd = await call(staff.j, 'PATCH', '/api/staff/restaurant', { name: 'PagudFood Cafe Updated', category: 'Cafe / Restaurant', address: 'Updated demo address, Siquijor', municipality: 'Siquijor', description: 'Updated staff demo description' });
     const refreshed = await call(anon, 'GET', '/api/restaurants/pagudfood');
     ok(upd.status === 200 && refreshed.data.restaurant.name === 'PagudFood Cafe Updated' && refreshed.data.restaurant.address === 'Updated demo address, Siquijor', 'PagudFood staff edits are reflected on the customer restaurant profile');
@@ -63,7 +67,8 @@ async function call(j, method, p, body, extra = {}) {
     const payment = await call(customer.j, 'GET', `/api/payments/${order.data.paymentId}`);
     ok(payment.status === 200 && payment.data.demoPayment && payment.data.instructions.demo && /NOT A REAL ACCOUNT/.test(payment.data.instructions.mobileMasked), 'customer payment page is explicitly marked simulated with a fake account');
     const qr = await fetch(BASE + `/api/payments/${order.data.paymentId}/qr`, { headers: { Cookie: customer.j.get() } });
-    ok(qr.status === 200 && qr.headers.get('content-type') === 'image/png' && /no-store/.test(qr.headers.get('cache-control')), 'demo QR is served as a private non-scannable PNG');
+    ok(qr.status === 200 && qr.headers.get('content-type') === 'image/png' && /no-store/.test(qr.headers.get('cache-control')) &&
+      Buffer.from(await qr.arrayBuffer()).equals(demoQrReplacement), 'customer receives the replacement demo QR through the private payment endpoint');
     const png = Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,...Array(200).fill(7)]);
     const proof = await call(customer.j, 'POST', `/api/payments/${order.data.paymentId}/proof?reference=DEMO123456&amount=${quote.data.total}`, png, { 'Content-Type': 'image/png' });
     ok(proof.status === 201 && proof.data.status === 'UNDER_REVIEW', 'customer can upload a simulated receipt');
