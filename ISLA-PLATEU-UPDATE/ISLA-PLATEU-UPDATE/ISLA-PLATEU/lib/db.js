@@ -608,10 +608,9 @@ function openDatabase(dbPath, root) {
     const demoQr = copyLukaAsset("demo-gcash-qr.png", privateDir);
     if (!paymentAccount) {
       db.prepare("INSERT INTO restaurant_payment_accounts (restaurant_id,holder_name,mobile,qr_file) VALUES ('luka-loko','LUCA LOKO DEMO ACCOUNT','09000000000',?)").run(demoQr);
-    } else if (paymentAccount.holder_name === 'LUCA LOKO DEMO ACCOUNT' && demoQr) {
-      // Keep the Luca Loko placeholder branded to this restaurant, not another demo restaurant.
-      fs.copyFileSync(path.join(assetDir, "demo-gcash-qr.png"), path.join(privateDir, demoQr));
-      if (paymentAccount.qr_file !== demoQr) db.prepare("UPDATE restaurant_payment_accounts SET qr_file=?, updated_at=datetime('now') WHERE restaurant_id='luka-loko'").run(demoQr);
+    } else if (paymentAccount.holder_name === 'LUCA LOKO DEMO ACCOUNT' && demoQr &&
+      (!paymentAccount.qr_file || !fs.existsSync(path.join(privateDir, paymentAccount.qr_file)))) {
+      db.prepare("UPDATE restaurant_payment_accounts SET qr_file=?, updated_at=datetime('now') WHERE restaurant_id='luka-loko'").run(demoQr);
     }
     db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('luka_loko_demo_v1', datetime('now'))");
   }

@@ -474,14 +474,12 @@
     const qrImage = pay.hasQr
       ? `<img class="pay-qr" src="/api/admin/restaurants/${encodeURIComponent(id)}/payment-qr?t=${Date.now()}" alt="Current private GCash QR code">`
       : `<p class="muted">${pay.holderOnFile ? "No GCash QR code uploaded." : "Payment account details must be saved by restaurant staff before a QR code can be uploaded."}</p>`;
-    const qrControls = pay.demoPayment
-      ? `<span class="pill">Fixed non-scannable demo QR</span>`
-      : `<label class="btn btn-quiet small file-btn ${pay.holderOnFile ? "" : "disabled"}">${icon("upload")} ${pay.hasQr ? "Choose replacement QR" : "Upload QR code"}<input type="file" hidden accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" id="adminQrFile" ${pay.holderOnFile ? "" : "disabled"}></label>`;
-    const qrPreview = pay.demoPayment
-      ? `<p class="hint">The demonstration QR cannot be replaced with a potentially scannable image.</p>`
-      : pay.holderOnFile
-        ? `<div class="stack hidden" id="adminQrPending" style="margin-top:12px"><strong>Preview replacement QR code</strong><img class="pay-qr" id="adminQrPreview" alt="Preview of selected replacement QR code"><div class="item-actions"><button class="btn btn-primary small" type="button" data-admin-qr-save>Save / Upload QR code</button><button class="btn btn-quiet small" type="button" data-admin-qr-cancel>Cancel</button></div></div><p class="hint">JPG, JPEG, PNG or WEBP, up to 5 MB.</p>`
-        : "";
+    const qrControls = pay.holderOnFile
+      ? `<label class="btn btn-quiet small file-btn">${icon("upload")} ${pay.hasQr ? pay.demoPayment ? "Replace demo QR image" : "Choose replacement QR" : "Upload QR code"}<input type="file" hidden accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" id="adminQrFile"></label>`
+      : `<span class="pill warn">Payment details must be set up first</span>`;
+    const qrPreview = pay.holderOnFile
+      ? `<div class="stack hidden" id="adminQrPending" style="margin-top:12px"><strong>Preview replacement QR code</strong><img class="pay-qr" id="adminQrPreview" alt="Preview of selected replacement QR code"><p class="hint">${pay.demoPayment ? "Demo payments remain simulated; this only updates the displayed QR image. Do not use a real payment QR for a demo restaurant." : "Check that this is the restaurant's own payment QR code."} JPG, JPEG, PNG or WEBP, up to 5 MB.</p><div class="item-actions"><button class="btn btn-primary small" type="button" data-admin-qr-save>Save / Upload QR code</button><button class="btn btn-quiet small" type="button" data-admin-qr-cancel>Cancel</button></div></div>`
+      : "";
     const m = App.modal({ title: x.name, size: "wide", html: `
       ${x.cover ? `<img src="${esc(x.cover)}" alt="" style="width:100%;max-height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px">` : ""}
       <p>${x.logo ? `<img src="${esc(x.logo)}" alt="" class="food-thumb" style="display:inline-block;vertical-align:middle;margin-right:8px">` : ""}<strong>${esc(x.category)}</strong> · ${esc([x.address, x.municipality].filter(Boolean).join(", ") || "No address")} · ${esc(x.contact || "no contact")}<br><span class="muted">Hours: ${esc(x.hours || "not set")} · ${x.description ? esc(x.description) : "no description"}</span></p>

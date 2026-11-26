@@ -45,8 +45,13 @@ async function call(j, method, p, body, extra = {}) {
     const tables = await call(anon, 'GET', '/api/restaurants/luka-loko/tables');
     ok(tables.status === 200 && tables.data.tables.length === 6, 'six reservation tables are preloaded');
     const payCfg = await call(staff.j, 'GET', '/api/staff/payment-account');
-    ok(payCfg.status === 200 && payCfg.data.demoPayment && payCfg.data.hasQr && payCfg.data.orderPrepay, 'demo payment account and fixed QR are preconfigured');
+    ok(payCfg.status === 200 && payCfg.data.demoPayment && payCfg.data.hasQr && payCfg.data.orderPrepay, 'demo payment account and QR are preconfigured');
     ok((await call(staff.j, 'POST', '/api/staff/payment-account/qr', Buffer.from('not-an-image'), { 'Content-Type': 'image/png' })).status === 409, 'staff cannot replace the demo QR with a potentially scannable payment QR');
+    const replacementQr = Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,...Array(200).fill(9)]);
+    const qrUpdate = await call(admin.j, 'POST', '/api/admin/restaurants/luka-loko/payment-qr', replacementQr, { 'Content-Type': 'image/png' });
+    const staffQr = await call(staff.j, 'GET', '/api/staff/payment-account/qr');
+    ok(qrUpdate.status === 200 && staffQr.status === 200 && Buffer.from(await staffQr.res.arrayBuffer()).equals(replacementQr),
+      'administrator can replace the demo QR image and staff see the new one');
     const upd = await call(staff.j, 'PATCH', '/api/staff/restaurant', { name: 'Luca Loko Restaurant', category: 'Cafe / Restaurant', address: 'Maite, San Juan, Siquijor, Philippines', municipality: 'Siquijor', description: 'Updated staff demo description' });
     const refreshed = await call(anon, 'GET', '/api/restaurants/luka-loko');
     ok(upd.status === 200 && refreshed.data.restaurant.name === 'Luca Loko Restaurant' && refreshed.data.restaurant.address === 'Maite, San Juan, Siquijor, Philippines', 'Luca Loko staff edits are reflected on the customer restaurant profile');
@@ -79,6 +84,10 @@ async function call(j, method, p, body, extra = {}) {
     ok(restarted && afterRestart.data.restaurant.lat === 9.1542172 && afterRestart.data.restaurant.lng === 123.4972914 &&
       afterRestart.data.restaurant.locationStatus === 'verified' && afterRestart.data.menu.length === 8 && afterRestart.data.restaurant.logo,
       'Luca Loko location, menu and demo profile remain saved after an application restart');
+    const adminAfterRestart = await login('ADMINISTRATOR', 'admin@islaplateu.local', ADMIN_PW);
+    const qrAfterRestart = await call(adminAfterRestart.j, 'GET', '/api/admin/restaurants/luka-loko/payment-qr');
+    ok(qrAfterRestart.status === 200 && Buffer.from(await qrAfterRestart.res.arrayBuffer()).equals(replacementQr),
+      'administrator-replaced demo QR remains saved after an application restart');
 
   } catch (e) { fail++; console.log('FAIL unexpected error: ' + e.stack); }
   await stopApp();

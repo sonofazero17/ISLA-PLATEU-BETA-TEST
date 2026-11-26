@@ -754,7 +754,6 @@ module.exports = function createFeatures(ctx) {
   add("POST", "/api/admin/restaurants/:id/payment-qr", ADMIN, async ({ req, res, user, params }) => {
     const r = one("SELECT * FROM restaurants WHERE id = ?", params.id);
     if (!r) { req.resume(); fail(404, "Restaurant not found."); }
-    if (r.demo_payment) { req.resume(); fail(409, "This demonstration restaurant uses a fixed, non-scannable QR code and cannot be changed."); }
     const a = payAccount(r.id);
     if (!a) { req.resume(); fail(409, "The restaurant must save its payment account details before a QR code can be uploaded."); }
     let saved;
